@@ -1,9 +1,0 @@
-{
-  "codeowners": ["@gpongelli"],
-  "config_flow": false,
-  "dependencies": [],
-  "documentation": "https://github.com/user/my_component/",
-  "domain": "meteo_system_weather_component",
-  "name": "Meteo System Weather",
-  "requirements": []
-}

@@ -1,0 +1,9 @@
+{
+  "codeowners": ["@gpongelli"],
+  "config_flow": false,
+  "dependencies": [],
+  "documentation": "https://github.com/gpongelli/meteo_system_weather_component/",
+  "domain": "meteo_system_weather",
+  "name": "Meteo System Weather",
+  "requirements": ["beautifulsoup4==4.7.1", "aiohttp==3.7.3"]
+}
