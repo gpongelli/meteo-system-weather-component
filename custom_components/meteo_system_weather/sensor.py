@@ -41,6 +41,7 @@ from .const import (
     ATTR_WIND,
     ATTR_WIND_DIRECTION,
     ATTR_WIND_STATUS,
+    ATTR_RAIN,
     ATTR_RAIN_STATUS,
     ATTR_RAIN_INTENSITY,
     ATTR_STATION_STATUS,
@@ -214,6 +215,9 @@ class MeteoSystemWeatherSensor(Entity):
         # print(f"commentovento: {commentovento.get_text().strip()}")
 
         # rain
+        rain = wind_status.find_next('span', 'temp')
+        self.attrs[ATTR_RAIN] = float(rain.get_text().strip())
+        # print(f"rain: {rain.get_text().strip()}")
         rain_intensity = wind_status.find_next('span', 'valori2')
         regval = re.search("(?P<piog>[0-9.]*)\\D", rain_intensity.get_text().strip())
         self.attrs[ATTR_RAIN_INTENSITY] = float(regval.group('piog'))
