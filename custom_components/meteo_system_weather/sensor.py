@@ -50,7 +50,7 @@ from .const import (
 _LOGGER = logging.getLogger(__name__)
 
 # Time between updating data from webpage
-SCAN_INTERVAL = timedelta(minutes=5)
+SCAN_INTERVAL = timedelta(minutes=3)
 
 
 STATION_SCHEMA = vol.Schema(
