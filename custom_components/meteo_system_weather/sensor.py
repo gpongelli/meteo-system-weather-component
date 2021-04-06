@@ -128,8 +128,6 @@ class MeteoSystemWeatherSensor(Entity):
 
                 # update timestamp call for next comparison
                 URL_TIMESTAMP[self._url] = (_time_call, html)
-
-                html = await self.fetch()
             else:
                 # reuse saved html
                 _, html = URL_TIMESTAMP[self._url]
