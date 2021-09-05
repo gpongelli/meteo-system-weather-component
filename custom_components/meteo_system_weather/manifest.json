@@ -6,6 +6,6 @@
   "issue_tracker": "https://github.com/gpongelli/meteo-system-weather-component/issues",
   "domain": "meteo_system_weather",
   "name": "Meteo System Weather",
-  "version": "1.1.1",
-  "requirements": ["beautifulsoup4==4.7.1", "aiohttp==3.7.3"]
+  "version": "1.1.2",
+  "requirements": ["beautifulsoup4>=4.7.1", "aiohttp>=3.7.3"]
 }
