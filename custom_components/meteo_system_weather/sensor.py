@@ -118,27 +118,32 @@ class MeteoSystemWeatherSensor(Entity):
         return self._available
 
     async def async_update(self):
+        await self.clean_attrs()
+
         try:
             _time_call = datetime.now()
             html = ""
             _saved, _ = URL_TIMESTAMP.get(self._url, (datetime(1970, 1, 1), ""))
 
-            if (_time_call - _saved) >= SCAN_INTERVAL:
-                html = await self.fetch()
+            try:
+                if (_time_call - _saved) >= SCAN_INTERVAL:
+                    html = await asyncio.gather(self.fetch())
 
-                # update timestamp call for next comparison
-                URL_TIMESTAMP[self._url] = (_time_call, html)
+                    # update timestamp call for next comparison
+                    URL_TIMESTAMP[self._url] = (_time_call, html)
+                else:
+                    # reuse saved html
+                    _, html = URL_TIMESTAMP[self._url]
+            except (asyncio.exceptions.CancelledError, asyncio.exceptions.TimeoutError) as e:
+                _LOGGER.exception(f"{e.__class__.__qualname__} while retrieving data from {self._url}")
             else:
-                # reuse saved html
-                _, html = URL_TIMESTAMP[self._url]
+                soup = await self.soup_page(html)
+                # print(soup.title)
+                station_name = soup.find_all('span', 'testotitolo')
 
-            soup = await self.soup_page(html)
-            # print(soup.title)
-            station_name = soup.find_all('span', 'testotitolo')
-
-            filtered = list(filter(self.filter_station, station_name))
-            # print(filtered)
-            await self.work_on_span(filtered[0])  # only one span element matching the input station name
+                filtered = list(filter(self.filter_station, station_name))
+                # print(filtered)
+                await self.work_on_span(filtered[0])  # only one span element matching the input station name
         except ClientError:
             _LOGGER.exception(f"Error retrieving data from {self._url}")
 
@@ -146,6 +151,23 @@ class MeteoSystemWeatherSensor(Entity):
         async with async_timeout.timeout(15):
             async with self._session.get(self._url) as response:
                 return await response.text()
+
+    async def clean_attrs(self):
+        self.attrs[ATTR_LAST_UPDATE] = "--"
+        self.attrs[ATTR_TEMP] = 0
+        self.attrs[ATTR_HUMIDITY] = 0
+        self.attrs[ATTR_PERCEIVED_TEMP] = 0
+        self.attrs[ATTR_TEMP_STATUS] = "--"
+        self.attrs[ATTR_PRESSURE] = 0
+        self.attrs[ATTR_WIND] = 0
+        self.attrs[ATTR_WIND_DIRECTION] = "--"
+        self.attrs[ATTR_WIND_STATUS] = "--"
+        self.attrs[ATTR_RAIN] = 0
+        self.attrs[ATTR_RAIN_INTENSITY] = 0
+        self.attrs[ATTR_RAIN_STATUS] = "--"
+        self.attrs[ATTR_STATION_STATUS] = "UNREACHABLE"
+        self._state = "UNREACHABLE"
+        self._available = False
 
     async def soup_page(self, html):
         try:
