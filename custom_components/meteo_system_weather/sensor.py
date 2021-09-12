@@ -122,22 +122,25 @@ class MeteoSystemWeatherSensor(Entity):
 
         try:
             _time_call = datetime.now()
-            html = ""
             _saved, _ = URL_TIMESTAMP.get(self._url, (datetime(1970, 1, 1), ""))
 
+            page_content = ""
             try:
                 if (_time_call - _saved) >= SCAN_INTERVAL:
                     html = await asyncio.gather(self.fetch())
 
+                    # with gather, the result is an aggregate list of returned values
+                    page_content = html[0]
+
                     # update timestamp call for next comparison
-                    URL_TIMESTAMP[self._url] = (_time_call, html)
+                    URL_TIMESTAMP[self._url] = (_time_call, page_content)
                 else:
                     # reuse saved html
                     _, html = URL_TIMESTAMP[self._url]
             except Exception as e:
                 _LOGGER.exception(f"{e.__class__.__qualname__} while retrieving data from {self._url}")
             else:
-                soup = await self.soup_page(html)
+                soup = await self.soup_page(page_content)
                 # print(soup.title)
                 station_name = soup.find_all('span', 'testotitolo')
 
