@@ -134,7 +134,7 @@ class MeteoSystemWeatherSensor(Entity):
                 else:
                     # reuse saved html
                     _, html = URL_TIMESTAMP[self._url]
-            except (asyncio.exceptions.CancelledError, asyncio.exceptions.TimeoutError) as e:
+            except Exception as e:
                 _LOGGER.exception(f"{e.__class__.__qualname__} while retrieving data from {self._url}")
             else:
                 soup = await self.soup_page(html)
