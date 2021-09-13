@@ -146,7 +146,10 @@ class MeteoSystemWeatherSensor(Entity):
 
                 filtered = list(filter(self.filter_station, station_name))
                 # print(filtered)
-                await self.work_on_span(filtered[0])  # only one span element matching the input station name
+
+                # sometimes filtered array contains nothing
+                if filtered:
+                    await self.work_on_span(filtered[0])  # only one span element matching the input station name
         except ClientError:
             _LOGGER.exception(f"Error retrieving data from {self._url}")
 
