@@ -95,6 +95,7 @@ class MeteoSystemWeatherSensor(Entity):
         self._state = None
         self._available = False
         self._html = None
+        self._refresh_interval = SCAN_INTERVAL
 
     @property
     def name(self) -> str:
@@ -127,7 +128,7 @@ class MeteoSystemWeatherSensor(Entity):
 
         page_content = ""
         try:
-            if (_time_call - _saved) >= SCAN_INTERVAL:
+            if (_time_call - _saved) >= self._refresh_interval:
                 html = await asyncio.gather(self.fetch())
 
                 # with gather, the result is an aggregate list of returned values
@@ -140,7 +141,12 @@ class MeteoSystemWeatherSensor(Entity):
                 _, html = URL_TIMESTAMP[self._url]
         except (ServerDisconnectedError, CancelledError, TimeoutError) as e:
             _LOGGER.warning(f"{e.__class__.__qualname__} while retrieving data from {self._url}")
+            # refresh sensors less frequent when exception happens, to avoid too many exception occurrences on log
+            self._refresh_interval = self._refresh_interval * 2
         else:
+            # restore original scan interval when no exception happens
+            self._refresh_interval = SCAN_INTERVAL
+
             soup = await self.soup_page(page_content)
             # print(soup.title)
             station_name = soup.find_all('span', 'testotitolo')
