@@ -4,6 +4,8 @@ import re
 from datetime import timedelta, datetime
 from typing import Any, Callable, Dict, Tuple, Optional
 from urllib import parse
+from aiohttp.client_exceptions import *
+from asyncio.exceptions import *
 
 import asyncio
 import async_timeout
@@ -120,38 +122,35 @@ class MeteoSystemWeatherSensor(Entity):
     async def async_update(self):
         await self.clean_attrs()
 
+        _time_call = datetime.now()
+        _saved, _ = URL_TIMESTAMP.get(self._url, (datetime(1970, 1, 1), ""))
+
+        page_content = ""
         try:
-            _time_call = datetime.now()
-            _saved, _ = URL_TIMESTAMP.get(self._url, (datetime(1970, 1, 1), ""))
+            if (_time_call - _saved) >= SCAN_INTERVAL:
+                html = await asyncio.gather(self.fetch())
 
-            page_content = ""
-            try:
-                if (_time_call - _saved) >= SCAN_INTERVAL:
-                    html = await asyncio.gather(self.fetch())
+                # with gather, the result is an aggregate list of returned values
+                page_content = html[0]
 
-                    # with gather, the result is an aggregate list of returned values
-                    page_content = html[0]
-
-                    # update timestamp call for next comparison
-                    URL_TIMESTAMP[self._url] = (_time_call, page_content)
-                else:
-                    # reuse saved html
-                    _, html = URL_TIMESTAMP[self._url]
-            except Exception as e:
-                _LOGGER.exception(f"{e.__class__.__qualname__} while retrieving data from {self._url}")
+                # update timestamp call for next comparison
+                URL_TIMESTAMP[self._url] = (_time_call, page_content)
             else:
-                soup = await self.soup_page(page_content)
-                # print(soup.title)
-                station_name = soup.find_all('span', 'testotitolo')
+                # reuse saved html
+                _, html = URL_TIMESTAMP[self._url]
+        except (ServerDisconnectedError, CancelledError, TimeoutError) as e:
+            _LOGGER.warning(f"{e.__class__.__qualname__} while retrieving data from {self._url}")
+        else:
+            soup = await self.soup_page(page_content)
+            # print(soup.title)
+            station_name = soup.find_all('span', 'testotitolo')
 
-                filtered = list(filter(self.filter_station, station_name))
-                # print(filtered)
+            filtered = list(filter(self.filter_station, station_name))
+            # print(filtered)
 
-                # sometimes filtered array contains nothing
-                if filtered:
-                    await self.work_on_span(filtered[0])  # only one span element matching the input station name
-        except ClientError:
-            _LOGGER.exception(f"Error retrieving data from {self._url}")
+            # sometimes filtered array contains nothing
+            if filtered:
+                await self.work_on_span(filtered[0])  # only one span element matching the input station name
 
     async def fetch(self):
         async with async_timeout.timeout(15):
