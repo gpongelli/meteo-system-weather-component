@@ -3,7 +3,6 @@ import logging
 import re
 from datetime import timedelta, datetime
 from typing import Any, Callable, Dict, Tuple, Optional
-from urllib import parse
 from aiohttp.client_exceptions import *
 from asyncio.exceptions import *
 
@@ -11,9 +10,7 @@ import asyncio
 import async_timeout
 
 from bs4 import BeautifulSoup
-import time
 import aiohttp
-from aiohttp import ClientError
 
 import voluptuous as vol
 
@@ -139,7 +136,7 @@ class MeteoSystemWeatherSensor(Entity):
             else:
                 # reuse saved html
                 _, html = URL_TIMESTAMP[self._url]
-        except (ServerDisconnectedError, CancelledError, TimeoutError) as e:
+        except (ServerDisconnectedError, CancelledError, TimeoutError, ClientOSError) as e:
             _LOGGER.warning(f"{e.__class__.__qualname__} while retrieving data from {self._url}")
             # refresh sensors less frequent when exception happens, to avoid too many exception occurrences on log
             self._refresh_interval = self._refresh_interval * 2
