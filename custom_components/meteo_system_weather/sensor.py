@@ -136,7 +136,7 @@ class MeteoSystemWeatherSensor(Entity):
             else:
                 # reuse saved html
                 _, html = URL_TIMESTAMP[self._url]
-        except (ServerDisconnectedError, CancelledError, TimeoutError, ClientOSError) as e:
+        except (ServerDisconnectedError, CancelledError, TimeoutError, ClientOSError, ClientConnectorError) as e:
             _LOGGER.warning(f"{e.__class__.__qualname__} while retrieving data from {self._url}")
             # refresh sensors less frequent when exception happens, to avoid too many exception occurrences on log
             self._refresh_interval = self._refresh_interval * 2
