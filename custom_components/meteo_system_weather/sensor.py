@@ -201,18 +201,21 @@ class MeteoSystemWeatherSensor(Entity):
 
         # temperature
         temp_span = span_elem[0].find_next('span', 'temp')
-        self.attrs[ATTR_TEMP] = float(temp_span.get_text().strip())
+        _temp = temp_span.get_text().strip()
+        self.attrs[ATTR_TEMP] = float(_temp) if _temp else None
         # print(f"TEMP: {temp_span.get_text().strip()}")
 
         # umidity
         umid_span = temp_span.find_next('span', 'temp')
-        self.attrs[ATTR_HUMIDITY] = float(umid_span.get_text().strip())
+        _umid = umid_span.get_text().strip()
+        self.attrs[ATTR_HUMIDITY] = float(_umid) if _umid else None
         # print(f"UMID: {umid_span.get_text().strip()}")
 
         # perceived temp
         perc_span = umid_span.find_next('span', 'scrittine').find_next('span', 'valori2')
         regval = re.search("(?P<temp>[0-9.]*)\\D", perc_span.get_text().strip())
-        self.attrs[ATTR_PERCEIVED_TEMP] = float(regval.group('temp'))
+        _perc = regval.group('temp')
+        self.attrs[ATTR_PERCEIVED_TEMP] = float(_perc) if _perc else None
         # print(f"percepitavalore: {regval.group('temp')}")
 
         # temp comment
@@ -224,12 +227,14 @@ class MeteoSystemWeatherSensor(Entity):
         pressure = temp_status.find_next('td', 'bordoalto').find_next('span', 'scrittine')
         pressure_text = pressure.get_text().split(':')
         regval = re.search("(?P<press>[0-9.]*)\\D", pressure_text[1].strip())
-        self.attrs[ATTR_PRESSURE] = float(regval.group('press'))
+        _press = regval.group('press')
+        self.attrs[ATTR_PRESSURE] = float(_press) if _press else None
         # print(f"pressione: {regval.group('press')}")
 
         # wind
         wind_speed = pressure.find_next('span', 'temp')
-        self.attrs[ATTR_WIND] = float(wind_speed.get_text().strip())
+        _wind = wind_speed.get_text().strip()
+        self.attrs[ATTR_WIND] = float(_wind) if _wind else None
         # print(f"velvento: {velvento.get_text().strip()}")
 
         wind_direction = wind_speed.find_next('span', 'valor2')
@@ -244,11 +249,13 @@ class MeteoSystemWeatherSensor(Entity):
 
         # rain
         rain = wind_status.find_next('span', 'temp')
-        self.attrs[ATTR_RAIN] = float(rain.get_text().strip())
+        _rain = rain.get_text().strip()
+        self.attrs[ATTR_RAIN] = float(_rain) if _rain else None
         # print(f"rain: {rain.get_text().strip()}")
         rain_intensity = wind_status.find_next('span', 'valori2')
         regval = re.search("(?P<piog>[0-9.]*)\\D", rain_intensity.get_text().strip())
-        self.attrs[ATTR_RAIN_INTENSITY] = float(regval.group('piog'))
+        _piogg = regval.group('piog')
+        self.attrs[ATTR_RAIN_INTENSITY] = float(_piogg) if _piogg else None
         # print(f"velpioggia: {regval.group('piog')}")
         rain_status = rain_intensity.find_next('span', 'avvisi')
         self.attrs[ATTR_RAIN_STATUS] = rain_status.get_text().strip()
