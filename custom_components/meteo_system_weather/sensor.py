@@ -118,8 +118,6 @@ class MeteoSystemWeatherSensor(Entity):
         return self._available
 
     async def async_update(self):
-        await self.clean_attrs()
-
         _time_call = datetime.now()
         _saved, _ = URL_TIMESTAMP.get(self._url, (datetime(1970, 1, 1), ""))
 
