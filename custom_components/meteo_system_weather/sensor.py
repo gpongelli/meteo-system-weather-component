@@ -142,7 +142,7 @@ class MeteoSystemWeatherSensor(Entity):
             # restore original scan interval when no exception happens
             self._refresh_interval = SCAN_INTERVAL
 
-            soup = await self.soup_page(page_content)
+            soup = self.soup_page(page_content)
             # print(soup.title)
             station_name = soup.find_all('span', 'testotitolo')
 
@@ -151,7 +151,7 @@ class MeteoSystemWeatherSensor(Entity):
 
             # sometimes filtered array contains nothing
             if filtered:
-                await self.work_on_span(filtered[0])  # only one span element matching the input station name
+                self.work_on_span(filtered[0])  # only one span element matching the input station name
 
     async def fetch(self):
         async with async_timeout.timeout(15):
@@ -175,7 +175,7 @@ class MeteoSystemWeatherSensor(Entity):
         self._state = "UNREACHABLE"
         self._available = False
 
-    async def soup_page(self, html):
+    def soup_page(self, html):
         try:
             return BeautifulSoup(html, 'html.parser')
         except Exception as e:
@@ -187,7 +187,7 @@ class MeteoSystemWeatherSensor(Entity):
         else:
             return False
 
-    async def work_on_span(self, tag):
+    def work_on_span(self, tag):
         # print(tag.get_text().strip())
         span_elem = tag.find_next_sibling('span', 'valori3').next_sibling()
         # remove text in between
