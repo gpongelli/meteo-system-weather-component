@@ -202,20 +202,20 @@ class MeteoSystemWeatherSensor(Entity):
         # temperature
         temp_span = span_elem[0].find_next('span', 'temp')
         _temp = temp_span.get_text().strip()
-        self.attrs[ATTR_TEMP] = float(_temp) if _temp else None
+        self.attrs[ATTR_TEMP] = float(_temp) if _temp else 0
         # print(f"TEMP: {temp_span.get_text().strip()}")
 
         # umidity
         umid_span = temp_span.find_next('span', 'temp')
         _umid = umid_span.get_text().strip()
-        self.attrs[ATTR_HUMIDITY] = float(_umid) if _umid else None
+        self.attrs[ATTR_HUMIDITY] = float(_umid) if _umid else 0
         # print(f"UMID: {umid_span.get_text().strip()}")
 
         # perceived temp
         perc_span = umid_span.find_next('span', 'scrittine').find_next('span', 'valori2')
         regval = re.search("(?P<temp>[0-9.]*)\\D", perc_span.get_text().strip())
         _perc = regval.group('temp')
-        self.attrs[ATTR_PERCEIVED_TEMP] = float(_perc) if _perc else None
+        self.attrs[ATTR_PERCEIVED_TEMP] = float(_perc) if _perc else 0
         # print(f"percepitavalore: {regval.group('temp')}")
 
         # temp comment
@@ -228,13 +228,13 @@ class MeteoSystemWeatherSensor(Entity):
         pressure_text = pressure.get_text().split(':')
         regval = re.search("(?P<press>[0-9.]*)\\D", pressure_text[1].strip())
         _press = regval.group('press')
-        self.attrs[ATTR_PRESSURE] = float(_press) if _press else None
+        self.attrs[ATTR_PRESSURE] = float(_press) if _press else 0
         # print(f"pressione: {regval.group('press')}")
 
         # wind
         wind_speed = pressure.find_next('span', 'temp')
         _wind = wind_speed.get_text().strip()
-        self.attrs[ATTR_WIND] = float(_wind) if _wind else None
+        self.attrs[ATTR_WIND] = float(_wind) if _wind else 0
         # print(f"velvento: {velvento.get_text().strip()}")
 
         wind_direction = wind_speed.find_next('span', 'valor2')
@@ -250,12 +250,12 @@ class MeteoSystemWeatherSensor(Entity):
         # rain
         rain = wind_status.find_next('span', 'temp')
         _rain = rain.get_text().strip()
-        self.attrs[ATTR_RAIN] = float(_rain) if _rain else None
+        self.attrs[ATTR_RAIN] = float(_rain) if _rain else 0
         # print(f"rain: {rain.get_text().strip()}")
         rain_intensity = wind_status.find_next('span', 'valori2')
         regval = re.search("(?P<piog>[0-9.]*)\\D", rain_intensity.get_text().strip())
         _piogg = regval.group('piog')
-        self.attrs[ATTR_RAIN_INTENSITY] = float(_piogg) if _piogg else None
+        self.attrs[ATTR_RAIN_INTENSITY] = float(_piogg) if _piogg else 0
         # print(f"velpioggia: {regval.group('piog')}")
         rain_status = rain_intensity.find_next('span', 'avvisi')
         self.attrs[ATTR_RAIN_STATUS] = rain_status.get_text().strip()
