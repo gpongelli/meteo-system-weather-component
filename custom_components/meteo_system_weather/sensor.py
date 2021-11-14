@@ -149,6 +149,8 @@ class MeteoSystemWeatherSensor(Entity):
             filtered = list(filter(self.filter_station, station_name))
             # print(filtered)
 
+            self.clean_attrs()
+
             # sometimes filtered array contains nothing
             if filtered:
                 self.work_on_span(filtered[0])  # only one span element matching the input station name
@@ -158,7 +160,7 @@ class MeteoSystemWeatherSensor(Entity):
             async with self._session.get(self._url) as response:
                 return await response.text()
 
-    async def clean_attrs(self):
+    def clean_attrs(self):
         self.attrs[ATTR_LAST_UPDATE] = "--"
         self.attrs[ATTR_TEMP] = 0
         self.attrs[ATTR_HUMIDITY] = 0
