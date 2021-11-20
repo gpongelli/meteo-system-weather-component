@@ -100,10 +100,6 @@ class MeteoSystemWeatherSensor(Entity):
         return self._name
 
     @property
-    def device_state_attributes(self) -> Dict[str, Any]:
-        return self.attrs
-
-    @property
     def unique_id(self) -> str:
         """Return the unique ID of the sensor."""
         return self._name
