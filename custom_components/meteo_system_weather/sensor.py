@@ -6,6 +6,8 @@ from typing import Any, Callable, Dict, Tuple, Optional
 from aiohttp.client_exceptions import *
 from asyncio.exceptions import *
 
+from homeassistant.const import MAJOR_VERSION, MINOR_VERSION
+
 import asyncio
 import async_timeout
 
@@ -93,6 +95,12 @@ class MeteoSystemWeatherSensor(Entity):
         self._available = False
         self._html = None
         self._refresh_interval = SCAN_INTERVAL
+
+        # changed property name since 2021.12
+        if MAJOR_VERSION >= 2022 or (MAJOR_VERSION == 2021 and MINOR_VERSION == 12):
+            MeteoSystemWeatherSensor.extra_state_attributes = property(lambda self: self.attrs)
+        else:
+            MeteoSystemWeatherSensor.device_state_attributes = property(lambda self: self.attrs)
 
     @property
     def name(self) -> str:
