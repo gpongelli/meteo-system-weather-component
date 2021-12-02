@@ -4,7 +4,7 @@
 Copy into custom_components folder.
 
 # Example configuration.yaml entry
-```
+```yml
 sensor:
   - platform: meteo_system_weather
     url: https://...
@@ -18,19 +18,6 @@ sensor:
       - station_name: "station 3"
       - station_name: "station 4"
 ```
-
-Then using the attrib through template platform
-```
-    sensors:
-      meteo_status:
-        friendly_name: "Humidity"
-        value_template: >-
-          {% if states.sensor.meteo_system_<station_name>.attributes['station_status'] -%}
-            {{ state_attr('sensor.meteo_system_<station_name>', 'humidity') }}
-          {%- else -%}OFFLINE{%- endif -%}
-```
-
-station_status attribute can be None or "ONLINE" string, that will execute the state_attr reading.
 
 
 # Thanks to
