@@ -125,7 +125,7 @@ class MeteoSystemFetcher:
         self.__data = {d.unique_id: d for d in dev}
         self.__stations = stations
 
-    async def fetch_data(self):
+    async def fetch_data(self, *_):
         """Get the latest data from url."""
         try:
             _session = async_get_clientsession(self.hass)
