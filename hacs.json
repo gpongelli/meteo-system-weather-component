@@ -1,5 +1,9 @@
 {
   "name": "Meteo System Weather",
+  "domains": [
+    "sensor"
+  ],
   "render_readme": true,
-  "iot_class": "Cloud Polling"
+  "iot_class": "Cloud Polling",
+  "homeassistant": "2025.1.0" 
 }
