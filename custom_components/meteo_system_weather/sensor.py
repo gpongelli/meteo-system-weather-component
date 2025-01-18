@@ -26,6 +26,7 @@ from homeassistant.const import (
     UnitOfTemperature,
     UnitOfSpeed,
     UnitOfLength,
+    UnitOfPressure,
     UnitOfVolumetricFlux,
 )
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
@@ -82,7 +83,7 @@ SENSOR_TYPES = {
     ENTITY_PERCEIVED_TEMP:    [UnitOfTemperature.CELSIUS, SensorDeviceClass.TEMPERATURE, "mdi:thermometer"],
     ENTITY_TEMP_COMMENT:      [None, None, "mdi:thermometer"],
     ENTITY_HUMIDITY:          [PERCENTAGE, SensorDeviceClass.HUMIDITY, "mdi:water-percent"],
-    ENTITY_PRESSURE:          [SensorDeviceClass.HPA, SensorDeviceClass.PRESSURE, "mdi:gauge"],
+    ENTITY_PRESSURE:          [UnitOfPressure.HPA, SensorDeviceClass.PRESSURE, "mdi:gauge"],
     ENTITY_WIND:              [UnitOfSpeed.KILOMETERS_PER_HOUR, None, "mdi:weather-windy"],
     ENTITY_WIND_DIRECTION:    [None, None, "mdi:compass"],
     ENTITY_WIND_COMMENT:      [None, None, "mdi:weather-windy"],
