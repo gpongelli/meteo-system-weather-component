@@ -17,21 +17,16 @@ from http import HTTPStatus
 
 import voluptuous as vol
 
-from homeassistant.components.sensor import PLATFORM_SCHEMA
+from homeassistant.components.sensor import PLATFORM_SCHEMA, SensorDeviceClass
 from homeassistant.const import (
     ATTR_ATTRIBUTION,
     ATTR_NAME,
     CONF_URL,
-    UnitOfTemperature,
     PERCENTAGE,
-    DEVICE_CLASS_HUMIDITY,
-    DEVICE_CLASS_PRESSURE,
-    DEVICE_CLASS_TEMPERATURE,
-    PRESSURE_HPA,
-    SPEED_METERS_PER_SECOND,
-    PRECIPITATION_MILLIMETERS_PER_HOUR,
-    LENGTH_MILLIMETERS,
-    SPEED_KILOMETERS_PER_HOUR,
+    UnitOfTemperature,
+    UnitOfSpeed,
+    UnitOfLength,
+    UnitOfVolumetricFlux,
 )
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.event import async_call_later, async_track_utc_time_change
@@ -83,16 +78,16 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
 SENSOR_TYPES = {
     ENTITY_STATION_STATUS:    [None, None, None],
     ENTITY_LAST_UPDATE:       [None, None, "mdi:clock-outline"],
-    ENTITY_TEMP:              [UnitOfTemperature.CELSIUS, DEVICE_CLASS_TEMPERATURE, "mdi:thermometer"],
-    ENTITY_PERCEIVED_TEMP:    [UnitOfTemperature.CELSIUS, DEVICE_CLASS_TEMPERATURE, "mdi:thermometer"],
+    ENTITY_TEMP:              [UnitOfTemperature.CELSIUS, SensorDeviceClass.TEMPERATURE, "mdi:thermometer"],
+    ENTITY_PERCEIVED_TEMP:    [UnitOfTemperature.CELSIUS, SensorDeviceClass.TEMPERATURE, "mdi:thermometer"],
     ENTITY_TEMP_COMMENT:      [None, None, "mdi:thermometer"],
-    ENTITY_HUMIDITY:          [PERCENTAGE, DEVICE_CLASS_HUMIDITY, "mdi:water-percent"],
-    ENTITY_PRESSURE:          [PRESSURE_HPA, DEVICE_CLASS_PRESSURE, "mdi:gauge"],
-    ENTITY_WIND:              [SPEED_KILOMETERS_PER_HOUR, None, "mdi:weather-windy"],
+    ENTITY_HUMIDITY:          [PERCENTAGE, SensorDeviceClass.HUMIDITY, "mdi:water-percent"],
+    ENTITY_PRESSURE:          [SensorDeviceClass.HPA, SensorDeviceClass.PRESSURE, "mdi:gauge"],
+    ENTITY_WIND:              [UnitOfSpeed.KILOMETERS_PER_HOUR, None, "mdi:weather-windy"],
     ENTITY_WIND_DIRECTION:    [None, None, "mdi:compass"],
     ENTITY_WIND_COMMENT:      [None, None, "mdi:weather-windy"],
-    ENTITY_RAIN:              [LENGTH_MILLIMETERS, None, "mdi:weather-pouring"],
-    ENTITY_RAIN_INTENSITY:    [PRECIPITATION_MILLIMETERS_PER_HOUR, None, "mdi:weather-pouring"],
+    ENTITY_RAIN:              [UnitOfLength.MILLIMETERS, None, "mdi:weather-pouring"],
+    ENTITY_RAIN_INTENSITY:    [UnitOfVolumetricFlux.MILLIMETERS_PER_HOUR, None, "mdi:weather-pouring"],
     ENTITY_RAIN_COMMENT:      [None, None, "mdi:weather-pouring"],
 }
 
