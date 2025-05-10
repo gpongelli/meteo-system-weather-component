@@ -36,8 +36,8 @@ from homeassistant.helpers.entity import Entity
 from homeassistant.helpers.typing import (
     ConfigType,
     DiscoveryInfoType,
-    HomeAssistantType,
 )
+from homeassistant.core import HomeAssistant
 
 from .const import (
     CONF_STATION_NAME,
@@ -94,7 +94,7 @@ SENSOR_TYPES = {
 
 
 async def async_setup_platform(
-    hass: HomeAssistantType,
+    hass: HomeAssistant,
     config: ConfigType,
     async_add_entities: Callable,
     discovery_info: Optional[DiscoveryInfoType] = None,
